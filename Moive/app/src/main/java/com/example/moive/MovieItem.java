@@ -3,9 +3,16 @@ package com.example.moive;
 public class MovieItem {
 
     String title;
-    String name;
-    String review;
-    int image;
+    String year;
+    String imb;
+    String image;
+
+    public MovieItem(String title, String year, String imb, String image) {
+        this.title = title;
+        this.year = year;
+        this.imb = imb;
+        this.image = image;
+    }
 
     public String getTitle() {
         return title;
@@ -15,34 +22,27 @@ public class MovieItem {
         this.title = title;
     }
 
-    public String getName() {
-        return name;
+    public String getYear() {
+        return year;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setYear(String year) {
+        this.year = year;
     }
 
-    public String getReview() {
-        return review;
+    public String getImb() {
+        return imb;
     }
 
-    public void setReview(String review) {
-        this.review = review;
+    public void setImb(String imb) {
+        this.imb = imb;
     }
 
-    public int getImage() {
+    public String getImage() {
         return image;
     }
 
-    public void setImage(int image) {
-        this.image = image;
-    }
-
-    public MovieItem(String title, String name, String review, int image) {
-        this.title = title;
-        this.name = name;
-        this.review = review;
+    public void setImage(String image) {
         this.image = image;
     }
 }

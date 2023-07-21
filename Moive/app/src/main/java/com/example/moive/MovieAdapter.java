@@ -8,6 +8,8 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class MovieAdapter extends RecyclerView.Adapter<MyViewHolder> {
@@ -29,11 +31,14 @@ public class MovieAdapter extends RecyclerView.Adapter<MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        holder.name.setText(items.get(position).getName());
+        holder.year.setText(items.get(position).getYear());
         holder.title.setText(items.get(position).getTitle());
-        holder.review.setText(items.get(position).getReview());
-        holder.image_view.setImageResource(items.get(position).getImage());
-
+        holder.imb.setText(items.get(position).getImb());
+        //holder.image_view.setImageResource(items.get(position).getImage());
+        Glide.with(holder.itemView.getContext())
+                .load(items.get(position).getImage())
+                .error(R.drawable.error404) // Set the default image resource ID here
+                .into(holder.image_view);
     }
 
     @Override

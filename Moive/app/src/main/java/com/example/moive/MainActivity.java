@@ -3,12 +3,14 @@ package com.example.moive;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 import android.os.Bundle;
 import android.util.Log;
-
+import android.widget.Toast;
 import java.util.ArrayList;
 import java.util.List;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -21,19 +23,44 @@ public class MainActivity extends AppCompatActivity {
 
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
 
-        List<MovieItem> items = new ArrayList<>();
-        items.add(new MovieItem("Pathasn(2023)" , "Shah Rukh Khan" ,"A Pakistani general hires a private terror outfit to conduct attacks in India while Pathaan, an Indian secret agent, is on a mission to form a special unit.", R.drawable.pathaan_film_poster));
-        items.add(new MovieItem("The Terminal","Tom Hanks" , "Viktor Navorski gets stranded at an airport when a war rages in his country. He is forced by the officials to stay at the airport until his original identity is confirmed.", R.drawable.the_terminal));
-        items.add(new MovieItem("Mishan Impossible","Naveen Polishetty","Tired of feeling insignificant, three boys set out to apprehend a notorious criminal. However, they end up getting embroiled with a child trafficking ring and cross paths with a journalist.",R.drawable.mishan_impossible));
-        items.add(new MovieItem("Nice View","Jing Hao ","Nice View is a 2022 Chinese comedy-drama film directed by Wen Muye. It is Wen's second feature film. It mainly tells the story of a young man named Jing Hao who, in order to save his sister, desperately seizes the opportunity he found to start a business, changes his fate, and affects the people around him",R.drawable.nice_view_poster));
-        items.add(new MovieItem("Wu Kong","Eddie Peng","Five hundred years before the Monkey King wreaks havoc on the heavenly kingdom, Wukong refuses to bow down to his destiny when he sets out to rebel against the gods.", R.drawable.wu_kong));
-        items.add(new MovieItem("Love 020","Bai YuGaming ","expert and campus stud Xiao Nai finds himself falling for computer science major Bei Wei Wei because of her mastery of an online role-playing game.",R.drawable.love_020));
-        items.add(new MovieItem("Green Snake","Tang Xiaoxi","While trying to free her sister from Fahai's clutches, Xio Qing winds up in a dystopian city and meets a mysterious man who can't recall his past life.",R.drawable.green_snake));
-        items.add(new MovieItem("Raatchasi","Jyothika","A dogged headmistress teaches everyone a lesson in perseverance as she battles bureaucracy and corrupt officials to bring her government-run school up to scratch.",R.drawable.raatchasi));
+        //List<MovieItem> items = new ArrayList<>();
+
+        Toast.makeText(MainActivity.this,"API Call", Toast.LENGTH_SHORT).show();
+
+        ApiRequest apiRequest = ApiCall.getApiRequest();
 
 
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-        recyclerView.setAdapter(new MovieAdapter(getApplicationContext(),items));
+
+        ApiCall.getApiRequest().getMovieList("jaw","fdb70bd1").enqueue(new Callback<MovieResponse>() {
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(MainActivity.this,"Success", Toast.LENGTH_SHORT).show();
+                    List<Movie> list = response.body().getSearch();
+                    List<MovieItem> items = new ArrayList<>();
+                    for (Movie movie : list) {
+                        String title = movie.getTitle();
+                        String year = movie.getYear();
+                        String imdbID = movie.getImdbID();
+                        String posterResId =movie.getPoster();
+
+                        items.add(new MovieItem(title, year, imdbID, posterResId));
+                    }
+
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    recyclerView.setAdapter(new MovieAdapter(getApplicationContext(),items));
+
+                }else
+                    Toast.makeText(MainActivity.this,response.message(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this,t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
 
     }
 }
