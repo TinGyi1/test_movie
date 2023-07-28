@@ -27,7 +27,9 @@ public class MovieDetailview extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie_detailview);
+
         String title = getIntent().getStringExtra("Title");
+        String year = getIntent().getStringExtra("Year");
 
         title_txt= findViewById(R.id.title);
         year_txt= findViewById(R.id.year);
@@ -38,32 +40,25 @@ public class MovieDetailview extends AppCompatActivity  {
         imageView=findViewById(R.id.poster);
 
 
+        ApiCall.getApiRequest().getMovieDetailList(title, year,"fdb70bd1").enqueue(new Callback<MovieDetailRespone>() {
 
-
-        ApiCall.getApiRequest().getMovieDetailList(title,"fdb70bd1").enqueue(new Callback<MovieDetailRespone>() {
             @Override
             public void onResponse(Call<MovieDetailRespone> call, Response<MovieDetailRespone> response) {
                 if(response.isSuccessful()){
                     Toast.makeText(MovieDetailview.this,"Success",Toast.LENGTH_SHORT).show();
                     MovieDetailRespone data = response.body();
 
-                    title_txt.setText(data.getTitle());
-                    year_txt.setText(data.getYear());
-                    genre_txt.setText(data.getGenre());
-                    writer_txt.setText(data.getWriter());
-                    actors_txt.setText(data.getActors());
+                    title_txt.setText("Title : " + data.getTitle());
+                    year_txt.setText("Year : "+data.getYear());
+                    genre_txt.setText("Genre : "+data.getGenre());
+                    writer_txt.setText("Writer : "+data.getWriter());
+                    actors_txt.setText("Actors : "+data.getActors());
                     plot_txt.setText(data.getPlot());
 
                     Glide.with(MovieDetailview.this)
                             .load(data.getPoster())
                             .error(R.drawable.error404) // Set the default image resource ID here
                             .into(imageView);
-
-
-
-
-
-
 
                 }else {
                     Toast.makeText(MovieDetailview.this,"Server Error",Toast.LENGTH_SHORT).show();

@@ -10,6 +10,6 @@ public interface ApiRequest {
     Call<MovieResponse> getMovieList(@Query("s") String searchTerm, @Query("apikey") String apiKey);
 
     @GET("/")
-    Call<MovieDetailRespone> getMovieDetailList(@Query("t") String searchTerm, @Query("apikey") String apiKey);
+    Call<MovieDetailRespone> getMovieDetailList(@Query("t") String searchTerm,@Query("y") String year, @Query("apikey") String apiKey);
 
 }
