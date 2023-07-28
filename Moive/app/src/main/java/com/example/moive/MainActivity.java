@@ -64,7 +64,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
             @Override
             public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
                 if(response.isSuccessful()){
-//                    Toast.makeText(MainActivity.this,"Success", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(MainActivity.this,"Success", Toast.LENGTH_SHORT).show();
                     List<Movie> list = response.body().getSearch();
                     items = new ArrayList<>();
                     if (list != null){
