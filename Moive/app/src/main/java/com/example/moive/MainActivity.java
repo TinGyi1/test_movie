@@ -31,6 +31,43 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         recyclerView = findViewById(R.id.recyclerview);
         searchView = findViewById(R.id.searchview);
 
+        ApiCall.getApiRequest().getMovieList("jaw","fdb70bd1").enqueue(new Callback<MovieResponse>()
+
+        {
+
+            @Override
+            public void onResponse(Call<MovieResponse> call, Response<MovieResponse> response) {
+                if(response.isSuccessful()){
+                    Toast.makeText(MainActivity.this,"Success", Toast.LENGTH_SHORT).show();
+                    List<Movie> list = response.body().getSearch();
+                    items = new ArrayList<>();
+                    if (list != null){
+                        for (Movie movie : list) {
+                            String title = movie.getTitle();
+                            String year = movie.getYear();
+                            String imdbID = movie.getImdbID();
+                            String posterResId =movie.getPoster();
+
+                            items.add(new MovieItem(title, year, imdbID, posterResId));
+                        }
+                    }else {
+                        Toast.makeText(MainActivity.this, "This Movie Name does not have in database ", Toast.LENGTH_SHORT).show();
+                    }
+
+
+                    recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+                    recyclerView.setAdapter(new MovieAdapter(getApplicationContext(),items, MainActivity.this));
+
+                }else
+                    Toast.makeText(MainActivity.this,response.message(), Toast.LENGTH_SHORT).show();
+            }
+
+            @Override
+            public void onFailure(Call<MovieResponse> call, Throwable t) {
+                Toast.makeText(MainActivity.this,t.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -41,6 +78,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
                 }
                 return false;
             }
+
 
             @Override
             public boolean onQueryTextChange(String newText) {
@@ -82,8 +120,7 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
 
 
                     recyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-                    recyclerView.setAdapter(new MovieAdapter(getApplicationContext(),items
-                            , MainActivity.this));
+                    recyclerView.setAdapter(new MovieAdapter(getApplicationContext(),items, MainActivity.this));
 
                 }else
                     Toast.makeText(MainActivity.this,response.message(), Toast.LENGTH_SHORT).show();
@@ -96,6 +133,8 @@ public class MainActivity extends AppCompatActivity implements RecyclerViewInter
         });
 
     }
+
+
 
     @Override
     public void onItemClick(int position) {
